@@ -23,6 +23,7 @@ with cond:
     if not notified[0]:
         cond.wait()
 
-table = NetworkTables.getTable("midi")
-print(table.getKeys())
+while True:
+    table = NetworkTables.getTable("midi")
+    print(table.getNumber('a',0))
 
