@@ -23,6 +23,6 @@ with cond:
     if not notified[0]:
         cond.wait()
 
-table = NetworkTables.getTable("SmartDashboard")
+table = NetworkTables.getTable("midi")
 print(table.getKeys())
 
