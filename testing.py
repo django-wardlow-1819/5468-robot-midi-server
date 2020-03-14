@@ -1,12 +1,14 @@
 import MidiInterface
 
-midi = MidiInterface.MidiInterface(0, 0)
 
-print(midi.getMidiDevices())
 
-#midi.test()
+print(MidiInterface.MidiInterface.getMidiDevices())
+
+midi = MidiInterface.MidiInterface(0, 1)
+
+#midi.sendRawData(16, )
 
 while True:
-    x = midi.getRawData()
+    x = midi.getData()
     if(x != None):
         print(x)
