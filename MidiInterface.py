@@ -14,7 +14,15 @@ class MidiInterface:
         12: "PC",
         13: "Aftertouch Channel",
         14: "Pitch",
-        15: "Sysex"
+        15: "Sysex",
+        "NoteOff": 8,
+        "NoteOn": 9,
+        "Aftertouch": 10,
+        "CC": 11,
+        "PC": 12,
+        "Aftertouch Channel": 13,
+        "Pitch": 14,
+        "Sysex": 15
     }
 
     def __init__(self, inId, outid):
@@ -28,7 +36,6 @@ class MidiInterface:
     def getData(self):
         x = self.inp.get_message()
         try:
-
             mesage = x[0]
             ch = (mesage[0] & 0b00001111) + 1
             type = MidiInterface.commandTypes.get((mesage[0] >> 4))
@@ -42,8 +49,14 @@ class MidiInterface:
     def getRawData(self):
         return self.inp.get_message()
 
-    def sendRawData(self, chanle, byte2, byte3):
-        self.out.send_message([chanle + 143, byte2, byte3])
+    def sendData(self, chanle, type, byte2, byte3):
+        #puts the chanle and type into the same int to send
+        dataType = (MidiInterface.commandTypes.get(type) << 4)
+        byte1 = (dataType | chanle-1)
+        self.out.send_message([byte1, byte2, byte3])
+
+    def sendRawData(self, intArray):
+        self.out.send_message([intArray])
 
     def test(self):
         print(self.inp.get_current_api())

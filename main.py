@@ -26,4 +26,5 @@ with cond:
 while True:
     table = NetworkTables.getTable("midi")
     print(table.getNumber('a',0))
+    exit()
 

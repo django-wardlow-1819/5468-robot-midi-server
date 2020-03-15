@@ -4,11 +4,11 @@ import MidiInterface
 
 print(MidiInterface.MidiInterface.getMidiDevices())
 
-midi = MidiInterface.MidiInterface(0, 1)
+midi = MidiInterface.MidiInterface(0, 2)
 
-#midi.sendRawData(16, )
+midi.sendData(1, "CC", 1, 127)
 
 while True:
     x = midi.getData()
-    if(x != None):
+    if x != None:
         print(x)
