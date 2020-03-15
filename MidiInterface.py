@@ -56,7 +56,7 @@ class MidiInterface:
         self.out.send_message([byte1, byte2, byte3])
 
     def sendRawData(self, intArray):
-        self.out.send_message([intArray])
+        self.out.send_message(intArray)
 
     def test(self):
         print(self.inp.get_current_api())
