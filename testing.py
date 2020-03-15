@@ -1,14 +1,14 @@
-import MidiInterface
+import MidiWraper
+import time
+import random
 
+#print(MidiInterface.MidiInterface.getMidiDevices())
 
+midi = MidiWraper.MidiWraper(0,2)
 
-print(MidiInterface.MidiInterface.getMidiDevices())
-
-midi = MidiInterface.MidiInterface(0, 2)
-
-midi.sendData(1, "CC", 1, 127)
+midi.startMidiColection()
 
 while True:
-    x = midi.getData()
-    if x != None:
-        print(x)
+    print(midi.midiCCs)
+    time.sleep(2)
+    midi.midiCCs[1] = random.randint(0,127)

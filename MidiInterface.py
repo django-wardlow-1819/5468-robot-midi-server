@@ -46,6 +46,7 @@ class MidiInterface:
         except:
             return None
 
+
     def getRawData(self):
         return self.inp.get_message()
 
