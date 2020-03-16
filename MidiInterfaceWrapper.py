@@ -45,5 +45,13 @@ class MidiWrapper:
         raise Exception("NOT IMPLEMENTED!")
 
     @staticmethod
+    def getInputs():
+        return MidiInterface.MidiInterface.get_midi_in_devices()
+
+    @staticmethod
+    def getOutputs():
+        return MidiInterface.MidiInterface.get_midi_out_devices()
+
+    @staticmethod
     def get_devices():
         return MidiInterface.MidiInterface.get_midi_devices_string()

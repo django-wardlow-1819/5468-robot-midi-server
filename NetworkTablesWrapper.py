@@ -13,16 +13,18 @@ class NetworkTableWrapper:
     Return = tables.getTable("fake")
     receiveAction = None
     receivers = []
+    conectedAction = None
 
     # magic copied code to make network tables start
-    def __init__(self, ip):
+    def __init__(self, ip, conectedAction, reciveAction):
         self.connected = False
+        self.conectedAction = conectedAction
+        self.receiveAction = reciveAction
         cond = threading.Condition()
         notified = [False]
 
         def connection_listener(connected, info):
             self.connected = connected
-            print(info, '; Connected=%s' % connected)
             self.ccTable = self.tables.getTable("ccTable")
             self.noteTable = self.tables.getTable("noteTable")
             self.Return = self.tables.getTable("Return")
@@ -31,6 +33,7 @@ class NetworkTableWrapper:
                 cond.notify()
             self.create_receivers()
             self.create_received_listeners()
+            self.conectedAction(connected)
 
         self.tables.initialize(server=ip)
         self.tables.setUpdateRate(0.01)
@@ -39,10 +42,6 @@ class NetworkTableWrapper:
         with cond:
             if not notified[0]:
                 cond.wait()
-
-    # sets action to occur when update is received from the robot
-    def set_update_action(self, set_action):
-        self.receiveAction = set_action
 
     # actually runs the action
     def update_on_receive(self, key, value):
@@ -68,3 +67,6 @@ class NetworkTableWrapper:
     # sends a updated cc to the robot
     def update_cc(self, cc, value):
         self.ccTable.putNumber(str(cc), value)
+
+    def stop(self):
+        self.tables.stopClient()

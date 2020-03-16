@@ -1,13 +1,44 @@
 import NetworkTablesWrapper
 import MidiInterfaceWrapper
+import StupidDumbGuiWrapperGarbage
+import threading
 
-print(MidiInterfaceWrapper.MidiWrapper.get_devices())
-tables = NetworkTablesWrapper.NetworkTableWrapper('127.0.0.1')
-midi = MidiInterfaceWrapper.MidiWrapper(
-    0, 2, lambda a, b: tables.update_note(a, b),
-    lambda a, b: tables.update_cc(a, b))
 
-tables.set_update_action(lambda id_, value: midi.change_slider(id_, value))
+class Main:
+    tables = None
+    midi = None
+    gui = None
+    run = True
 
-while True:
-    midi.collect_data()
+    def __init__(self):
+        self.intiGui()
+
+    def intiGui(self):
+        self.gui = StupidDumbGuiWrapperGarbage.TkinterBad(lambda a, b, c: self.start(a, b, c), lambda: self.stop())
+
+    def stop(self):
+        self.run = False
+        self.tables.stop()
+
+    def start(self, ip, ins, out):
+        self.midi = MidiInterfaceWrapper.MidiWrapper(
+            ins, out, lambda a, b: self.tables.update_note(a, b),
+            lambda a, b: self.tables.update_cc(a, b))
+
+        self.tables = NetworkTablesWrapper.NetworkTableWrapper(
+            ip,
+            lambda c: self.conected(c),
+            lambda id_, value: self.midi.change_slider(id_, value)
+        )
+
+        threading.Thread(target=self.colect).start()
+
+    def colect(self):
+        while self.run:
+            self.midi.collect_data()
+
+    def conected(self, c):
+        self.gui.setConected(c)
+
+
+x = Main()
