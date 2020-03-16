@@ -1,11 +1,11 @@
 import rtmidi
-from rtmidi.midiutil import open_midiinput
 
 
 class MidiInterface:
     inp = rtmidi.MidiIn()
     out = rtmidi.MidiOut()
 
+    # TODO make this a enum
     commandTypes = {
         8: "NoteOff",
         9: "NoteOn",
@@ -30,13 +30,24 @@ class MidiInterface:
         self.out.open_port(outid)
 
     @staticmethod
-    def getMidiDevices():
+    def getMidiDevicesString():
         return "outputs: " + str(MidiInterface.out.get_ports()) + " inputs: " + str(MidiInterface.inp.get_ports())
 
+    @staticmethod
+    def getMidiOutDevices():
+        return MidiInterface.out.get_ports()
+
+    @staticmethod
+    def getMidiInDevices():
+        return MidiInterface.inp.get_ports()
+
+    # gets the midi data from the device and makes it good
     def getData(self):
+        # gets data from input
         x = self.inp.get_message()
         try:
             mesage = x[0]
+            # bitshifting stuff to decode the chanle from the datatype
             ch = (mesage[0] & 0b00001111) + 1
             type = MidiInterface.commandTypes.get((mesage[0] >> 4))
             # returns the chanel, then the data type then
@@ -46,19 +57,22 @@ class MidiInterface:
         except:
             return None
 
-
+    # gets raw data for debuging
     def getRawData(self):
         return self.inp.get_message()
 
+    # sends a pice of data
     def sendData(self, chanle, type, byte2, byte3):
-        #puts the chanle and type into the same int to send
+        # puts the chanle and type into the same int to send
         dataType = (MidiInterface.commandTypes.get(type) << 4)
-        byte1 = (dataType | chanle-1)
+        byte1 = (dataType | chanle - 1)
         self.out.send_message([byte1, byte2, byte3])
 
+    # sends raw data for sysex messages
     def sendRawData(self, intArray):
         self.out.send_message(intArray)
 
+    # for testing the midi conections
     def test(self):
         print(self.inp.get_current_api())
         print(self.inp.is_port_open())
