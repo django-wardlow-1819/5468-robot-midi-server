@@ -1,23 +1,23 @@
 import MidiInterface
 
 
-class MidiWraper:
-    # midi chanle to send on
-    chanle = 1
+class MidiWrapper:
+    # midi channel to send on
+    channel = 1
     midi = None
-    # things to do when cc or note recived
+    # things to do when cc or note received
     noteAction = None
     ccAction = None
 
     # cc and note action require a id(0-127) and a value (cc(0-127), note(True/False))
-    def __init__(self, inPort, outPort, noteAction, ccAction):
-        self.midi = MidiInterface.MidiInterface(inPort, outPort)
-        self.noteAction = noteAction
-        self.ccAction = ccAction
+    def __init__(self, in_port, out_port, note_action, cc_action):
+        self.midi = MidiInterface.MidiInterface(in_port, out_port)
+        self.noteAction = note_action
+        self.ccAction = cc_action
 
-    def colectData(self):
+    def collect_data(self):
         # gets data from interface
-        data = self.midi.getData()
+        data = self.midi.get_data()
         # returns if no data
         if data is None:
             return
@@ -27,23 +27,23 @@ class MidiWraper:
         if data[1] == "NoteOff":
             self.noteAction(data[2], False)
 
-        # runs ccAction on cc recive
+        # runs cc_action on cc receive
         if data[1] == "CC":
             self.ccAction(data[2], data[3])
 
-    # changes a slider on vertualsliders
-    # TODO mkae this work with whatever conteroler we end up using
-    def changeSlider(self, slider, value):
-        self.midi.sendData(self.chanle, "CC", slider, value)
+    # changes a slider on virtualsliders
+    # TODO make this work with whatever controller we end up using
+    def change_slider(self, slider, value):
+        self.midi.send_data(self.channel, "CC", slider, value)
 
     # sends raw data to midi devices for sysex
-    def SendRawData(self, array):
-        self.midi.sendRawData(array)
+    def send_raw_data(self, array):
+        self.midi.send_raw_data(array)
 
     # TODO impliment
-    def sendString(self):
-        raise Exception("NOT IMPLIMENTED!")
+    def send_string(self):
+        raise Exception("NOT IMPLEMENTED!")
 
     @staticmethod
-    def getDevices():
-        return MidiInterface.MidiInterface.getMidiDevicesString()
+    def get_devices():
+        return MidiInterface.MidiInterface.get_midi_devices_string()

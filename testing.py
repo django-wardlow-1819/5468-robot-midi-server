@@ -4,8 +4,8 @@ import random
 
 #print(MidiInterface.MidiInterface.getMidiDevices())
 
-midi = MidiInterfaceWrapper.MidiWraper(2, 3)
-print(midi.getDevices())
+midi = MidiInterfaceWrapper.MidiWrapper(2, 3)
+print(midi.get_devices())
 midi.startMidiColection()
 
 while True:

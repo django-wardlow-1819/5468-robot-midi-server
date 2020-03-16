@@ -1,11 +1,13 @@
-import NetworrkTablesWrapper
+import NetworkTablesWrapper
 import MidiInterfaceWrapper
 
-print(MidiInterfaceWrapper.MidiWraper.getDevices())
-tables = NetworrkTablesWrapper.NetwarkTableWraper('127.0.0.1')
-midi = MidiInterfaceWrapper.MidiWraper(0, 2, lambda a, b: tables.updateNote(a, b), lambda a, b: tables.updateCC(a, b))
+print(MidiInterfaceWrapper.MidiWrapper.get_devices())
+tables = NetworkTablesWrapper.NetworkTableWrapper('127.0.0.1')
+midi = MidiInterfaceWrapper.MidiWrapper(
+    0, 2, lambda a, b: tables.update_note(a, b),
+    lambda a, b: tables.update_cc(a, b))
 
-tables.setUpdateAction(lambda id, value: midi.changeSlider(id, value))
+tables.set_update_action(lambda id_, value: midi.change_slider(id_, value))
 
 while True:
-    midi.colectData()
+    midi.collect_data()
