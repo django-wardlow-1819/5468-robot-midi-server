@@ -28,6 +28,7 @@ class NetworkTableWrapper:
         notified = [False]
 
         def connection_listener(connected, info):
+            print(info)
             self.connected = connected
             self.ccTable = self.tables.getTable("ccTable")
             self.noteTable = self.tables.getTable("noteTable")
@@ -40,7 +41,7 @@ class NetworkTableWrapper:
             self.create_received_listeners()
             self.conectedAction(connected)
 
-        self.tables.initialize(server=ip)
+        self.tables.startClient(ip)
         self.tables.setUpdateRate(0.01)
         self.tables.addConnectionListener(connection_listener, immediateNotify=True)
 
