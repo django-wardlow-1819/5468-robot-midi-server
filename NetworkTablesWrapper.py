@@ -82,5 +82,6 @@ class NetworkTableWrapper:
     def update_cc(self, cc, value):
         self.ccTable.putNumber(str(cc), value)
 
+    # stops networktables
     def stop(self):
         self.tables.stopClient()

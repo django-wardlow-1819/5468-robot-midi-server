@@ -11,15 +11,18 @@ class Main:
     run = True
 
     def __init__(self):
-        self.intiGui()
-
-    def intiGui(self):
         self.gui = StupidDumbGuiWrapperGarbage.TkinterBad(lambda a, b, c: self.start(a, b, c), lambda: self.stop())
 
+    # stops midi colection and netowrktables
     def stop(self):
         self.run = False
-        self.tables.stop()
+        # so you can close when tables havent started
+        try:
+            self.tables.stop()
+        except:
+            pass
 
+    # starts midi and networktables client
     def start(self, ip, ins, out):
         self.midi = MidiInterfaceWrapper.MidiWrapper(
             ins, out, lambda a, b: self.tables.update_note(a, b),
@@ -27,19 +30,17 @@ class Main:
 
         self.tables = NetworkTablesWrapper.NetworkTableWrapper(
             ip,
-            lambda c: self.conected(c),
+            lambda c: self.gui.setConected(c),
             lambda id, value: self.midi.send_cc(id, value),
             lambda id, value: self.midi.send_NoteOn(id, value)
         )
 
         threading.Thread(target=self.colect).start()
 
+    # runs as a thred and colects the midi data
     def colect(self):
         while self.run:
             self.midi.collect_data()
-
-    def conected(self, c):
-        self.gui.setConected(c)
 
 
 x = Main()

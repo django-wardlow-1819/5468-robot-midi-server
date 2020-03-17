@@ -43,10 +43,6 @@ class MidiWrapper:
     def send_raw_data(self, array):
         self.midi.send_raw_data(array)
 
-    # TODO impliment
-    def send_string(self):
-        raise Exception("NOT IMPLEMENTED!")
-
     @staticmethod
     def getInputs():
         return MidiInterface.MidiInterface.get_midi_in_devices()

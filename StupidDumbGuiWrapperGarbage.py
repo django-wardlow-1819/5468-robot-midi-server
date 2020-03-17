@@ -106,6 +106,6 @@ class TkinterBad:
         def stupid(a, b):
             self.makeGarbage(a, b)
 
-        # threding sin to make tkinter work
+        # threding sin to make tkinter work beacuse mainloop is dumb
         x = threading.Thread(target=stupid, args=(startAction, stopaction))
         x.start()
