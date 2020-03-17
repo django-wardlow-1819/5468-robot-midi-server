@@ -31,10 +31,13 @@ class MidiWrapper:
         if data[1] == "CC":
             self.ccAction(data[2], data[3])
 
-    # changes a slider on virtualsliders
-    # TODO make this work with whatever controller we end up using
-    def change_slider(self, slider, value):
-        self.midi.send_data(self.channel, "CC", slider, value)
+    # sends a cc
+    def send_cc(self, id, value):
+        self.midi.send_data(self.channel, "CC", id, value)
+
+    # sends a noteOn
+    def send_NoteOn(self, id, value):
+        self.midi.send_data(self.channel, "NoteOn", id, value)
 
     # sends raw data to midi devices for sysex
     def send_raw_data(self, array):
