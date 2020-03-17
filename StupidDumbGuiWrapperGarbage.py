@@ -12,10 +12,12 @@ class TkinterBad:
     selectedOutput = None
     ip = "127.0.0.1"
 
+    # the spegity starts hear
     def makeGarbage(self, startAction, stopaction):
         root = tkinter.Tk()
         root.title("5468 robot midi client")
 
+        # stops all the threds
         def on_closing():
             stopaction()
             sys.exit()
@@ -60,6 +62,7 @@ class TkinterBad:
         self.ipEntry.grid(row=7, column=0)
 
         def buttonCommand():
+            # fake and bad
             if self.ipEntry.get() == "":
                 self.button.configure(bg="red", text="NO IP!")
             elif not self.conected:
@@ -80,6 +83,7 @@ class TkinterBad:
         else:
             self.button.configure(bg="red", text="Diconected", state=tkinter.DISABLED)
 
+    # dropdowns are DUMB
     def getIn(self):
         inNum = -1
         ins = MidiInterfaceWrapper.MidiWrapper.getInputs()
@@ -102,5 +106,6 @@ class TkinterBad:
         def stupid(a, b):
             self.makeGarbage(a, b)
 
+        # threding sin to make tkinter work
         x = threading.Thread(target=stupid, args=(startAction, stopaction))
         x.start()

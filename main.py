@@ -28,7 +28,8 @@ class Main:
         self.tables = NetworkTablesWrapper.NetworkTableWrapper(
             ip,
             lambda c: self.conected(c),
-            lambda id_, value: self.midi.change_slider(id_, value)
+            lambda id, value: self.midi.send_cc(id, value),
+            lambda id, value: self.midi.send_NoteOn(id, value)
         )
 
         threading.Thread(target=self.colect).start()
