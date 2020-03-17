@@ -3,13 +3,14 @@ import MidiInterfaceWrapper
 import threading
 import sys
 
-class TkinterBad:
 
+class TkinterBad:
     conected = False
     button = None
     ipEntry = None
     selectedInput = None
     selectedOutput = None
+    ip = "127.0.0.1"
 
     def makeGarbage(self, startAction, stopaction):
         root = tkinter.Tk()
@@ -55,7 +56,7 @@ class TkinterBad:
         # ip entry box
         tkinter.Label(window, text="robot ip").grid(row=6, column=0)
         self.ipEntry = tkinter.Entry(window)
-        self.ipEntry.insert(0, "127.0.0.1")
+        self.ipEntry.insert(0, self.ip)
         self.ipEntry.grid(row=7, column=0)
 
         def buttonCommand():
@@ -83,7 +84,7 @@ class TkinterBad:
         inNum = -1
         ins = MidiInterfaceWrapper.MidiWrapper.getInputs()
         for x in range(ins.__len__()):
-            if(ins[x] == self.selectedInput.get()):
+            if (ins[x] == self.selectedInput.get()):
                 inNum = x
                 break
         return inNum
@@ -101,7 +102,5 @@ class TkinterBad:
         def stupid(a, b):
             self.makeGarbage(a, b)
 
-
         x = threading.Thread(target=stupid, args=(startAction, stopaction))
         x.start()
-
