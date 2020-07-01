@@ -1,4 +1,5 @@
 import tkinter
+from tkinter import messagebox
 import MidiInterfaceWrapper
 import threading
 import sys
@@ -13,7 +14,14 @@ class TkinterBad:
     ip = "127.0.0.1"
 
     # the spegity starts hear
-    def makeGarbage(self, startAction, stopaction):
+    def makeGUI(self, startAction, stopaction):
+        # uses tkinter to make the gui and then calls mainloop when done beacuse mainloop is REQUIRED for tkinter to
+        # work but also FREESES whatever thred it is called in but ALSO hast to be called in the same thred all the
+        # gui elements were created in
+        #
+        # start action and stopaction are lambas from main.py to allow
+        # networktables and midi to be started and stopped from tkinter/this calss without making everything a even
+        # MORE of a spegety mess
         root = tkinter.Tk()
         root.title("5468 robot midi client")
 
@@ -33,24 +41,30 @@ class TkinterBad:
 
         # makes all the gui elements
 
-        # input selector
-        inputs = MidiInterfaceWrapper.MidiWrapper.getInputs()
-        self.selectedInput = tkinter.StringVar(window)
-        self.selectedInput.set(inputs[0])
-        inSelect = tkinter.OptionMenu(window, self.selectedInput, *inputs)
-        inSelect.grid(row=1, column=0)
-        tkinter.Label(window, text="input").grid(row=0, column=0)
+        # creats error if no midi devices
+        try:
+            # input selector
+            inputs = MidiInterfaceWrapper.MidiWrapper.getInputs()
+            self.selectedInput = tkinter.StringVar(window)
+            self.selectedInput.set(inputs[0])
+            inSelect = tkinter.OptionMenu(window, self.selectedInput, *inputs)
+            inSelect.grid(row=1, column=0)
+            tkinter.Label(window, text="input").grid(row=0, column=0)
 
-        # spacer lable
-        tkinter.Label(window, text="").grid(row=2, column=0)
+            # spacer lable
+            tkinter.Label(window, text="").grid(row=2, column=0)
 
-        # output selector
-        outputs = MidiInterfaceWrapper.MidiWrapper.getOutputs()
-        self.selectedOutput = tkinter.StringVar(window)
-        self.selectedOutput.set(outputs[0])
-        outSelect = tkinter.OptionMenu(window, self.selectedOutput, *outputs)
-        outSelect.grid(row=4, column=0)
-        tkinter.Label(window, text="output").grid(row=3, column=0)
+            # output selector
+            outputs = MidiInterfaceWrapper.MidiWrapper.getOutputs()
+            self.selectedOutput = tkinter.StringVar(window)
+            self.selectedOutput.set(outputs[0])
+            outSelect = tkinter.OptionMenu(window, self.selectedOutput, *outputs)
+            outSelect.grid(row=4, column=0)
+            tkinter.Label(window, text="output").grid(row=3, column=0)
+        except IndexError:
+            tkinter.messagebox.showerror(title="MIDI Error",
+                                         message="No midi devices connected, conect midi device and restart program")
+            sys.exit()
 
         # spacer lable
         tkinter.Label(window, text="").grid(row=5, column=0)
@@ -64,14 +78,14 @@ class TkinterBad:
         def buttonCommand():
             # fake and bad
             if self.ipEntry.get() == "":
-                self.button.configure(bg="red", text="NO IP!")
+                self.button.configure(bg="blue", text="NO IP!")
             elif not self.conected:
                 self.button.configure(bg="yellow", text="Conecting...")
                 self.button.update()
                 startAction(self.ipEntry.get(), self.getIn(), self.getOut())
 
         # button
-        self.button = tkinter.Button(window, text="Connect", command=buttonCommand, bg="blue", width=45, height=20)
+        self.button = tkinter.Button(window, text="Connect", command=buttonCommand, bg="red", width=45, height=20)
         self.button.grid(row=1, column=2, columnspan=1, rowspan=7, padx=5, pady=5)
 
         window.mainloop()
@@ -102,9 +116,10 @@ class TkinterBad:
                 break
         return outNum
 
+    # called when class initlised, runs makeGUI() in a new thread to get around tkinter being bad, see makeGUI for more
     def __init__(self, startAction, stopaction):
         def stupid(a, b):
-            self.makeGarbage(a, b)
+            self.makeGUI(a, b)
 
         # threding sin to make tkinter work beacuse mainloop is dumb
         x = threading.Thread(target=stupid, args=(startAction, stopaction))

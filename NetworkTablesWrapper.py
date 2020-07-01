@@ -1,13 +1,12 @@
 import threading
 from networktables import NetworkTablesInstance
-import time
 
 
 class NetworkTableWrapper:
     connected = False
     # all tables
     tables = NetworkTablesInstance()
-    # fake so autofill still works
+    # fake so IDE autofill works
     ccTable = tables.getTable("fake")
     noteTable = tables.getTable("fake")
     CCReturn = tables.getTable("fake")
@@ -62,7 +61,7 @@ class NetworkTableWrapper:
         id_ = k[2]
         self.NoteReceiveAction(int(id_), value)
 
-    # creates a array of receivers to receive updates
+    # creates a array of receivers to receive MIDI updates from networktables
     def create_receivers(self):
         for x in range(128):
             self.CCreceivers.append(self.CCReturn.getEntry(str(x)))

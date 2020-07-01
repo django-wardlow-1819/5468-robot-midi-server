@@ -18,9 +18,10 @@ class MidiWrapper:
     def collect_data(self):
         # gets data from interface
         data = self.midi.get_data()
-        # returns if no data
+        # ends if no data
         if data is None:
             return
+
         # runs note command on note recive
         if data[1] == "NoteOn":
             self.noteAction(data[2], True)

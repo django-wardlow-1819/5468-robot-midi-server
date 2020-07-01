@@ -5,7 +5,7 @@ class MidiInterface:
     inp = rtmidi.MidiIn()
     out = rtmidi.MidiOut()
 
-    # TODO make this a enum
+    # TODO make this not bad
     commandTypes = {
         8: "NoteOff",
         9: "NoteOn",
@@ -25,6 +25,7 @@ class MidiInterface:
         "Sysex": 15
     }
 
+    # open input and output when class initlised
     def __init__(self, in_id, out_id):
         self.inp.open_port(in_id)
         self.out.open_port(out_id)
@@ -47,10 +48,10 @@ class MidiInterface:
         x = self.inp.get_message()
         try:
             message = x[0]
-            # bit shifting stuff to decode the channel from the data type
+            # bit shifting stuff to separate the channel from the data type
             ch = (message[0] & 0b00001111) + 1
             midi_type = MidiInterface.commandTypes.get((message[0] >> 4))
-            # returns the chanel, then the data type then
+            # returns the chanel, then the data type then the message bytes
             return [ch, midi_type, message[1], message[2]]
 
         # if the midi data is bad then return none
