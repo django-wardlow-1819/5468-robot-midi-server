@@ -43,21 +43,22 @@ short answer: badly
 medium answer: go look at the comments
 
 long answer:
+
     * the gui: a new thread is made and 2 lambdas are passed in. the thread makes all tkinter stuff then runs mainloop. 
     the lambdas are startAction and stopAction and they allow the tkinter thread to start and stop network tables.
-    -
+    
     * midi: when connect is pressed on the gui a thread is started that continually requests new midi data from python-rtmidi. 
     if there is new data the data is possessed in MidiInterface.py to remove the timestamp and separate the chanel, data type and data byte 1 and 2. 
     that data is then possessed by  MidiInterfaceWrapper.py and if the data is a note on/off or cc then it calls a corresponding function from NetworkTablesWrapper.py to send the data to the robot
     when data needs to be sent to the robot NetworkTablesWrapper.py calls a the function corresponding to the data type in MidiInterfaceWrapper.py witch then uses MidiInterface.py to put the data in a valid format and use python-rtmidi to send it to the device
-    -
+    
     * networktables: when NetworkTablesWrapper.py is inited it makes a connection to the robot with the ip passed in from the gui. once connected 4 tables are made 
     (ccTable, noteTable, CCReturn, NoteReturn) the first 2 tables contain get dynamically populated with values based on what is received from the controller, 
     each new cc or note from the controller make or updates a entry with the key being the first byte and the data in the entry being true/false for notes or the second data byte for ccs.
     on connection the 2 return tables get a listener added to every entry from 0-127. the listeners listed for updates and when one is detected it calls to MidiInterfaceWrapper.py to send the midi data to the device.
 
 
-## Acknowledgments
+## Warnings
 
 * ALL OF THIS CODE IS BAD, ITS PROBABLY BEST TO RE-DO IT ALL USING rtpMIDI OR SOMETHING IF YOU WANT TO USE IT
 * all the lambdas everywhere are dumb
