@@ -1,6 +1,6 @@
 import NetworkTablesWrapper
 import MidiInterfaceWrapper
-import StupidDumbGuiWrapperGarbage
+import GUI
 import threading
 
 
@@ -10,9 +10,11 @@ class Main:
     gui = None
     run = True
 
-    # creats the gui when class initlised
+    # TODO all the lambdas everywhere are DUMB
+
+    # creats the gui when program started
     def __init__(self):
-        self.gui = StupidDumbGuiWrapperGarbage.TkinterBad(lambda a, b, c: self.start(a, b, c), lambda: self.stop())
+        self.gui = GUI.makeGUI(lambda a, b, c: self.start(a, b, c), lambda: self.stop())
 
     # stops midi colection and netowrktables
     def stop(self):
@@ -25,6 +27,7 @@ class Main:
 
     # starts midi and networktables client
     def start(self, ip, ins, out):
+
         # args are in_port, out_port, note_action, cc_action
         self.midi = MidiInterfaceWrapper.MidiWrapper(
             ins,
@@ -43,10 +46,11 @@ class Main:
 
         threading.Thread(target=self.colect).start()
 
-    # runs as a thred and colects the midi data
+    # runs as a thred and colects+prosses any new midi data
     def colect(self):
         while self.run:
             self.midi.collect_data()
 
 
+# inits the main class
 x = Main()

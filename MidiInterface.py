@@ -5,7 +5,7 @@ class MidiInterface:
     inp = rtmidi.MidiIn()
     out = rtmidi.MidiOut()
 
-    # TODO make this not bad
+    # TODO make this not bad, maby a enum or something
     commandTypes = {
         8: "NoteOff",
         9: "NoteOn",
@@ -31,15 +31,22 @@ class MidiInterface:
         self.out.open_port(out_id)
 
     @staticmethod
+    # used for testing
     def get_midi_devices_string():
         return "outputs: " + str(MidiInterface.out.get_ports()) + " inputs: " + str(MidiInterface.inp.get_ports())
 
     @staticmethod
     def get_midi_out_devices():
+        """
+        :return: an array of all avalible midi output devices
+        """
         return MidiInterface.out.get_ports()
 
     @staticmethod
     def get_midi_in_devices():
+        """
+        :return: an array of all avalible midi input devices
+        """
         return MidiInterface.inp.get_ports()
 
     # gets the midi data from the device and makes it good
@@ -47,6 +54,7 @@ class MidiInterface:
         # gets data from input
         x = self.inp.get_message()
         try:
+            #seprates the midi data from the unnessary timestamp and stuff
             message = x[0]
             # bit shifting stuff to separate the channel from the data type
             ch = (message[0] & 0b00001111) + 1
@@ -54,7 +62,7 @@ class MidiInterface:
             # returns the chanel, then the data type then the message bytes
             return [ch, midi_type, message[1], message[2]]
 
-        # if the midi data is bad then return none
+        # if the midi data is bad, or there is none, then return none
         except Exception:
             return None
 

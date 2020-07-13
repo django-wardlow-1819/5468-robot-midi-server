@@ -5,21 +5,23 @@ import threading
 import sys
 
 
-class TkinterBad:
+class makeGUI:
     conected = False
     button = None
     ipEntry = None
     selectedInput = None
     selectedOutput = None
-    ip = "127.0.0.1"
+    # deafult roborio ip for OUR team
+    # TODO make this stored on the device somehow and not hard coded
+    ip = "10.54.68.2"
 
     # the spegity starts hear
     def makeGUI(self, startAction, stopaction):
         # uses tkinter to make the gui and then calls mainloop when done beacuse mainloop is REQUIRED for tkinter to
-        # work but also FREESES whatever thred it is called in but ALSO hast to be called in the same thred all the
+        # work but also FREESES the thred once called but ALSO needs to be called in the same thred all the
         # gui elements were created in
         #
-        # start action and stopaction are lambas from main.py to allow
+        # start action and stopaction are functions from main.py to allow
         # networktables and midi to be started and stopped from tkinter/this calss without making everything a even
         # MORE of a spegety mess
         root = tkinter.Tk()
@@ -76,7 +78,7 @@ class TkinterBad:
         self.ipEntry.grid(row=7, column=0)
 
         def buttonCommand():
-            # fake and bad
+            # probably a bad way of doing this, dosent even check if its a valid ip
             if self.ipEntry.get() == "":
                 self.button.configure(bg="blue", text="NO IP!")
             elif not self.conected:
@@ -97,7 +99,8 @@ class TkinterBad:
         else:
             self.button.configure(bg="red", text="Diconected", state=tkinter.DISABLED)
 
-    # dropdowns are DUMB
+    # gets the entry number of the selected midi device
+    # there is probably a MUCH better way to do it, but this works
     def getIn(self):
         inNum = -1
         ins = MidiInterfaceWrapper.MidiWrapper.getInputs()
@@ -107,6 +110,8 @@ class TkinterBad:
                 break
         return inNum
 
+    # gets the entry number of the selected midi device
+    # there is probably a MUCH better way to do it, but this works
     def getOut(self):
         outNum = -1
         out = MidiInterfaceWrapper.MidiWrapper.getOutputs()

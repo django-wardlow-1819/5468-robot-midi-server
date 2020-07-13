@@ -1,6 +1,7 @@
 import MidiInterface
 
 
+# TODO combind this with midiinterface, it dosent need to be its own class
 class MidiWrapper:
     # midi channel to send on
     channel = 1

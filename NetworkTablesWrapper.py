@@ -2,15 +2,16 @@ import threading
 from networktables import NetworkTablesInstance
 
 
+# DONT TOUCH UNLESS BROKEN
 class NetworkTableWrapper:
     connected = False
+    made = True
     # all tables
     tables = NetworkTablesInstance()
-    # fake so IDE autofill works
-    ccTable = tables.getTable("fake")
-    noteTable = tables.getTable("fake")
-    CCReturn = tables.getTable("fake")
-    NoteReturn = tables.getTable("fake")
+    ccTable = None
+    noteTable = None
+    CCReturn = None
+    NoteReturn = None
     CCreceiveAction = None
     NoteReceiveAction = None
     CCreceivers = []
@@ -36,8 +37,11 @@ class NetworkTableWrapper:
             with cond:
                 notified[0] = True
                 cond.notify()
-            self.create_receivers()
-            self.create_received_listeners()
+            # to prevent runing agin if robot disconects and reconects
+            if self.made:
+                self.create_receivers()
+                self.create_received_listeners()
+                self.made = False
             self.conectedAction(connected)
 
         self.tables.startClient(ip)
@@ -50,13 +54,13 @@ class NetworkTableWrapper:
 
     # actually runs the action
     def update_on_cc_receive(self, key, value):
-        # in python, the keys are paths so we need to take off all the garbage
+        # in python, but not java, the keys are formated like paths so we need to take off all the garbage
         k = str(key).split("/")
         id_ = k[2]
         self.CCreceiveAction(int(id_), value)
 
     def update_on_note_receive(self, key, value):
-        # in python, the keys are paths so we need to take off all the garbage
+        # in python, but not java, the keys are formated like paths so we need to take off all the garbage
         k = str(key).split("/")
         id_ = k[2]
         self.NoteReceiveAction(int(id_), value)
